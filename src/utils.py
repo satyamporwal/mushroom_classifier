@@ -8,39 +8,8 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from src.exception import CustomException
 from src.logger import logging
 
-def deg_to_rad(degrees):
-    try:
-        logging.info('converting degree in to radius')
-        return degrees* (np.pi/180)
-    except Exception as e:
-        logging.info('conversion of degree into radius done')
-        raise CustomException(e,sys)
-
-def distcalculate(lat1,lon1,lat2,lon2):
-    try:
-        logging.info('calulating distance from latitude & longitude from dataset')
-        R = 6371
-        lat1 = abs(lat1)
-        lat2 = abs(lat2)
-        lon1 =  abs(lon1)
-        lon2 = abs(lon2)
-
-        d_lat = deg_to_rad(lat2-lat1)
-        d_lon = deg_to_rad(lon2-lon1)
-
-        a = np.sin(d_lat/2)**2 + np.cos(deg_to_rad(lat1)) * np.sin(d_lon/2)**2
-        c = 2* np.arctan2(np.sqrt(a),np.sqrt(1-a))
-        return R * c
     
 
-    except Exception as e:
-        logging.info('there is an error in claculating distance')
-        raise CustomException(e,sys)
-    
-
-    
-    
-    
     
 def save_object(file_path,obj):
     try:
@@ -59,23 +28,22 @@ def save_object(file_path,obj):
         
 def evaluate_model(X_train,y_train,X_test,y_test,models):
     try:
-        report={}
-        for i in range (len(models)):
+        report = {}
+        for i in range(len(models)):
             model = list(models.values())[i]
-
-            #Train model
-
+            # Train model
             model.fit(X_train,y_train)
 
-            # Predict Testing data
+            
 
-            y_test_pred = model.predict(X_test)
+            # Predict Testing data
+            y_test_pred =model.predict(X_test)
 
             # Get R2 scores for train and test data
-            #train_model_score = r2_score(y_train,y_train_pred)
+            #train_model_score = r2_score(ytrain,y_train_pred)
             test_model_score = r2_score(y_test,y_test_pred)
 
-            report[list(models.keys())[i]] = test_model_score
+            report[list(models.keys())[i]] =  test_model_score
 
         return report
 
