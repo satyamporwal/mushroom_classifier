@@ -74,8 +74,7 @@ class ModelTrainer:
             logging.info('Exception occurred at Model Training')
             raise CustomException(e, sys)
 
-        
-"""if __name__ == '__main__':
+if __name__ == '__main__':
     obj = DataIngestion()
     train_data_path,test_data_path=obj.initiate_data_ingestion()
     train_data_path = 'artifacts/train.csv'
@@ -86,4 +85,4 @@ class ModelTrainer:
     model_trainer=ModelTrainer()
     model_trainer.initate_model_training(train_arr,test_arr)
     print("Data transformation completed successfully.")
-    # print("Preprocessor file saved at:", preprocessor_file_path)"""
+    # print("Preprocessor file saved at:", preprocessor_file_path)

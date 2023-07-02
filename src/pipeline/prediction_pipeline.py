@@ -4,18 +4,24 @@ from src.exception import CustomException
 import sys
 import os
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 
 class PredictionPipeline:
-    def predict(self):
+    def __init__(self):
+        pass
+
+    def predict(self,features):
         try:
             preprocessor_path = os.path.join('artifacts', 'preprocessor.pkl')
             model_path = os.path.join('artifacts', 'model.pkl')
 
             preprocessor = load_object(preprocessor_path)
             model = load_object(model_path)
+            le = LabelEncoder()
+            label_data = features.apply(le.fit_transform)
 
-            data_scaled = preprocessor.transform(preprocessor)
+            data_scaled = preprocessor.transform(label_data)
             pred = model.predict(data_scaled)
             return pred
 
@@ -25,22 +31,8 @@ class PredictionPipeline:
 
 
 class CustomData:
-    def __init__(
-        self,
-        cap_surface,
-        bruises,
-        gill_spacing,
-        gill_size,
-        gill_color,
-        stalk_surface_above_ring,
-        stalk_surface_below_ring,
-        veil_type,
-        ring_type,
-        spore_print_color,
-        population,
-        habitat,
-        stalk_root,
-    ):
+    def __init__(self, cap_surface, bruises, gill_spacing, gill_size, gill_color, stalk_surface_above_ring,
+                 stalk_surface_below_ring, veil_type, ring_type, spore_print_color, population, habitat, stalk_root):
         self.cap_surface = cap_surface
         self.bruises = bruises
         self.gill_spacing = gill_spacing
@@ -59,18 +51,19 @@ class CustomData:
         try:
             logging.info('Converting into dataframe as started')
             custom_data_input_dict = {
-                'cap_surface': [self.cap_surface],
+                'cap-surface': [self.cap_surface],
                 'bruises': [self.bruises],
-                'gill_spacing': [self.gill_spacing],
-                'gill_size': [self.gill_size],
-                'gill_color': [self.gill_color],
-                'stalk_surface_above_ring': [self.stalk_surface_above_ring],
-                'stalk_surface_below_ring': [self.stalk_surface_below_ring],
-                'ring_type': [self.ring_type],
-                'spore_print_color': [self.spore_print_color],
+                'gill-spacing': [self.gill_spacing],  # Convert to float
+                'gill-size': [self.gill_size],
+                'gill-color': [self.gill_color],
+                'stalk-root': [self.stalk_root],
+                'stalk-surface-above-ring': [self.stalk_surface_above_ring],
+                'stalk-surface-below-ring' : [self.stalk_surface_below_ring],
+                'veil-type': [self.veil_type],
+                'ring-type': [self.ring_type],
+                'spore-print-color': [self.spore_print_color],
                 'population': [self.population],
                 'habitat': [self.habitat],
-                'stalk_root': [self.stalk_root],
             }
             df = pd.DataFrame(custom_data_input_dict)
             logging.info('Dataframe gathered')
@@ -78,3 +71,4 @@ class CustomData:
         except Exception as e:
             logging.info('Exception occurred in prediction pipeline')
             raise CustomException(e, sys)
+

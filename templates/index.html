@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mushroom Classification</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+    <div class="title">
+        <h2>Mushroom Classification ML App</h2>
+    </div>
+    <div class="subtitle">
+        <h3>Find out if your Mushroom is "Poisonous" or "Edible"</h3>
+    </div>
+    <div class="var">
+        <form action="/predict" method="post">
+            <!-- Your form inputs and dropdowns go here -->
+            <!-- Example dropdown -->
+            <div class="var1">
+                <label for="cap_surface">Cap Surface:</label>
+                <select id="cap_surface" name="cap_surface">
+                    <option value="0">Select</option>
+                    <option value="0.950643">Scaly - y</option>
+                    <option value="0.138035">Smooth - s</option>
+                    <option value="-1.487180">Fibrous - f</option>
+                    <option value="-0.674572">Grooves - g</option>
+                </select>
+            </div>
+            <!-- End of example dropdown -->
+            <br>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+</body>
+
+</html>
