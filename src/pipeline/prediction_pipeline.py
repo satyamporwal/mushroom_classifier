@@ -18,10 +18,12 @@ class PredictionPipeline:
 
             preprocessor = load_object(preprocessor_path)
             model = load_object(model_path)
-            le = LabelEncoder()
-            label_data = features.apply(le.fit_transform)
+            #le = LabelEncoder()
+            #label_data = features.apply(le.fit_transform)
+            logging.info(f'Train Dataframe Head In Logging:\n{features}')
 
-            data_scaled = preprocessor.transform(label_data)
+
+            data_scaled = preprocessor.transform(features)
             pred = model.predict(data_scaled)
             return pred
 
@@ -71,4 +73,5 @@ class CustomData:
         except Exception as e:
             logging.info('Exception occurred in prediction pipeline')
             raise CustomException(e, sys)
+
 
