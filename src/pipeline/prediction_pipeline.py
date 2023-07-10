@@ -13,19 +13,20 @@ class PredictionPipeline:
 
     def predict(self,features):
         try:
-            preprocessor_path = os.path.join('artifacts', 'preprocessor.pkl')
-            model_path = os.path.join('artifacts', 'model.pkl')
-
+            preprocessor_path = r"artifacts\\preprocessor.pkl"
+            model_path = r"artifacts\\model.pkl"
+            label_data_path = r"artifacts\\label_encoder.pkl"
+            print("This is path @@\n",model_path)
             preprocessor = load_object(preprocessor_path)
             model = load_object(model_path)
-           # le = LabelEncoder()
-            #label_data = features.apply(le.fit_transform)
-            logging.info(f'Train Dataframe Head In Logging:\n{features}')
+            label_data= load_object(label_data_path)
             #le = LabelEncoder()
-            
+            #label_data = features.apply(le.fit_transform)
+            logging.info(f'Train Dataframe Head In Logging:\n{label_data}')
 
+            data_labelled = label_data.fit_transform(features)
 
-            data_scaled = preprocessor.transform(features)
+            data_scaled = preprocessor.transform(data_labelled)
             pred = model.predict(data_scaled)
             return pred
 
@@ -35,14 +36,13 @@ class PredictionPipeline:
 
 
 class CustomData:
-    def __init__(self, cap_surface, bruises, gill_spacing, gill_size, gill_color,stalk_root, stalk_surface_above_ring,
-                 stalk_surface_below_ring, veil_type, ring_type, spore_print_color, population, habitat):
+    def __init__(self, cap_surface, bruises, gill_spacing, gill_size, gill_color, stalk_surface_above_ring,
+                 stalk_surface_below_ring, veil_type, ring_type, spore_print_color, population, habitat, stalk_root):
         self.cap_surface = cap_surface
         self.bruises = bruises
         self.gill_spacing = gill_spacing
         self.gill_size = gill_size
         self.gill_color = gill_color
-        self.stalk_root = stalk_root
         self.stalk_surface_above_ring = stalk_surface_above_ring
         self.stalk_surface_below_ring = stalk_surface_below_ring
         self.veil_type = veil_type

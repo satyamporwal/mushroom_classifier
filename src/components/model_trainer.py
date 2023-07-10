@@ -6,7 +6,7 @@ from xgboost import XGBRegressor
 from src.exception import CustomException
 from src.logger import logging
 from data_ingestion import DataIngestion
-from data_transformation import DataTransformationInitiated
+from data_transformation import DataTransformation
 from sklearn.tree import DecisionTreeClassifier
 
 
@@ -80,8 +80,8 @@ if __name__ == '__main__':
     train_data_path = 'artifacts/train.csv'
     test_data_path = 'artifacts/test.csv'
 
-    obj = DataTransformationInitiated()
-    train_arr, test_arr, preprocessor_file_path = obj.initiate_data_transformation(train_data_path, test_data_path)
+    obj = DataTransformation()
+    train_arr, test_arr, preprocessor_file_path = obj.initaite_data_transformation(train_data_path, test_data_path)
     model_trainer=ModelTrainer()
     model_trainer.initate_model_training(train_arr,test_arr)
     print("Data transformation completed successfully.")
