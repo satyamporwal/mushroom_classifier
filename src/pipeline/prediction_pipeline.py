@@ -5,6 +5,7 @@ import sys
 import os
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+import numpy as np
 
 
 class PredictionPipeline:
@@ -15,18 +16,23 @@ class PredictionPipeline:
         try:
             preprocessor_path = r"artifacts\\preprocessor.pkl"
             model_path = r"artifacts\\model.pkl"
-            label_data_path = r"artifacts\\label_encoder.pkl"
-            print("This is path @@\n",model_path)
+            #label_data_path = r"artifacts\\label_encoder.pkl"
+            #print("This is path @@\n",model_path)
             preprocessor = load_object(preprocessor_path)
             model = load_object(model_path)
-            label_data= load_object(label_data_path)
+            #label_data= load_object(label_data_path)
             #le = LabelEncoder()
-            #label_data = features.apply(le.fit_transform)
-            logging.info(f'Train Dataframe Head In Logging:\n{label_data}')
+            
+            #l#ogging.info(f'Train Dataframe Head In Logging:\n{label_data}')
 
-            data_labelled = label_data.fit_transform(features)
+            #data_labelled = label_data.fit_transform(features)
+            #data= label_data.transform(features)
+            data_scaled = preprocessor.transform(features)
+            for i in range(data_scaled.shape[1]):
+                 unique_values = np.unique(data_scaled[:, i])
+                 print(f"Unique values in column {i}: {unique_values}")
 
-            data_scaled = preprocessor.transform(data_labelled)
+
             pred = model.predict(data_scaled)
             return pred
 
@@ -36,21 +42,20 @@ class PredictionPipeline:
 
 
 class CustomData:
-    def __init__(self, cap_surface, bruises, gill_spacing, gill_size, gill_color, stalk_surface_above_ring,
-                 stalk_surface_below_ring, veil_type, ring_type, spore_print_color, population, habitat, stalk_root):
+    def __init__(self, cap_surface, bruises, gill_spacing, gill_size, gill_color, stalk_surface_above_ring, stalk_root,
+                ring_type, spore_print_color, population, habitat, ):
         self.cap_surface = cap_surface
         self.bruises = bruises
         self.gill_spacing = gill_spacing
         self.gill_size = gill_size
         self.gill_color = gill_color
+        self.stalk_root = stalk_root
         self.stalk_surface_above_ring = stalk_surface_above_ring
-        self.stalk_surface_below_ring = stalk_surface_below_ring
-        self.veil_type = veil_type
         self.ring_type = ring_type
         self.spore_print_color = spore_print_color
         self.population = population
         self.habitat = habitat
-        self.stalk_root = stalk_root
+    
 
     def get_data_as_dataframe(self):
         try:
@@ -63,8 +68,6 @@ class CustomData:
                 'gill-color': [self.gill_color],
                 'stalk-root': [self.stalk_root],
                 'stalk-surface-above-ring': [self.stalk_surface_above_ring],
-                'stalk-surface-below-ring' : [self.stalk_surface_below_ring],
-                'veil-type': [self.veil_type],
                 'ring-type': [self.ring_type],
                 'spore-print-color': [self.spore_print_color],
                 'population': [self.population],

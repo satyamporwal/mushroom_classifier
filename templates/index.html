@@ -8,6 +8,8 @@
     <title>Mushroom Classification</title>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
+<form action="{{url_for('predict_datapoint')}}" method="POST">
+    <div class="form-group">
 
 <body>
     <div class="title">
@@ -17,27 +19,148 @@
         <h3>Find out if your Mushroom is "Poisonous" or "Edible"</h3>
     </div>
     <div class="var">
-        <form action="/predict" method="post">
-            <!-- Your form inputs and dropdowns go here -->
-            <!-- Example dropdown -->
+        <form action="/result" method="post">
             <div class="var1">
-                <label for="cap_surface">Cap Surface:</label>
-                <select id="cap_surface" name="cap_surface">
+                <label for="Cap-Surface">Cap-Surface :</label>
+                <select id="Cap-Surface" name="Cap-Surface">
                     <option value="0">Select</option>
-                    <option value="0.950643">Scaly - y</option>
-                    <option value="0.138035">Smooth - s</option>
-                    <option value="-1.487180">Fibrous - f</option>
-                    <option value="-0.674572">Grooves - g</option>
+                    <option value="3">Scaly - y</option>
+                    <option value="2">Smooth - s</option>
+                    <option value="0">Fibrous - f</option>
+                    <option value="1">Grooves - g</option>
                 </select>
             </div>
-            <!-- End of example dropdown -->
+            <div class="var1">
+                <label for="Bruises">Bruises :</label>
+                <select name="Bruises" id="Bruises">
+                    <option value="0">Select</option>
+                    <option value="0">No Bruises - f</option>
+                    <option value="1">Yes Bruises - t</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Gill-Spacing">Gill-Spacing :</label>
+                <select name="Gill-Spacing" id="Gill-Spacing">
+                    <option value="0"> Select</option>
+                    <option value="0">Close - c</option>
+                    <option value="1">Crowded - w</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Gill-Size">Gill-Size :</label>
+                <select name="Gill-Size" id="Gill-Size">
+                    <option value="0">Select</option>
+                    <option value="0">Broad - b</option>
+                    <option value="1">Narrow - n</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Gill-Color">Gill-Color :</label>
+                <select name="Gill-Color" id="Gill-Color">
+                    <option value="0">Select</option>
+                    <option value="0">Buff - b</option>
+                    <option value="7">Pink - p</option>
+                    <option value="10">White - w</option>
+                    <option value="5">Brown - n</option>
+                    <option value="2">Gray - g</option>
+                    <option value="3">Chocolate - h</option>
+                    <option value="9">Purple - u</option>
+                    <option value="4">Black - k</option>
+                    <option value="1">Red - e</option>
+                    <option value="11">Yellow - y</option>
+                    <option value="6">Orange - o</option>
+                    <option value="8">Green - r</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Stalk-Root">Stalk-Root :</label>
+                <select name="Stalk-Root" id="Stalk-Root">
+                    <option value="0">Select</option>
+                    <option value="0">Bulbous - b</option>
+                    <option value="2">Equal - e</option>
+                    <option value="1">Club - c</option>
+                    <option value="3">Rooted - r</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Stalk-Surface-Above-Ring">Stalk-Surface-Above-Ring :</label>
+                <select name="Stalk-Surface-Above-Ring" id="Stalk-Surface-Above-Ring">
+                    <option value="0">Select</option>
+                    <option value="2">Smooth - s</option>
+                    <option value="1">Silky - k</option>
+                    <option value="0">Fibrous - f</option>
+                    <option value="3">Scaly - y</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Stalk-Surface-Below-Ring">Stalk-Surface-Below-Ring :</label>
+                <select name="Stalk-Surface-Below-Ring" id="Stalk-Surface-Below-Ring">
+                    <option value="0">Select</option>
+                    <option value="2">Smooth - s</option>
+                    <option value="1">Silky - k</option>
+                    <option value="0">Fibrous - f</option>
+                    <option value="3">Scaly - y</option>
+                </select>
+            
+            <div class="var1">
+                <label for="Ring-Type">Ring-Type :</label>
+                <select name="Ring-Type" id="Ring-Type">
+                    <option value="0">Select</option>
+                    <option value="4">Pendant - p</option>
+                    <option value="0">Evanescent - e</option>
+                    <option value="2">Large - l</option>
+                    <option value="1">Flaring - f</option>
+                    <option value="3">None - n</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Spore-Print-Color">Spore-Print-Color :</label>
+                <select name="Spore-Print-Color" id="Spore-Print-Color">
+                    <option value="0">Select</option>
+                    <option value="7">White - w</option>
+                    <option value="3">Brown - n</option>
+                    <option value="2">Black - k</option>
+                    <option value="1">Chocolate - h</option>
+                    <option value="5">Green - r</option>
+                    <option value="6">Purple - u</option>
+                    <option value="4">Orange - o</option>
+                    <option value="8">Yellow - y</option>
+                    <option value="0">Buff - b</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Population">Population :</label>
+                <select name="Population" id="Population">
+                    <option value="0">Select</option>
+                    <option value="4">Several - v</option>
+                    <option value="5">Solitary - y</option>
+                    <option value="3">Scattered - s</option>
+                    <option value="2">Numerous - n</option>
+                    <option value="0">Abundant - a</option>
+                    <option value="1">Clustered - c</option>
+                </select>
+            </div>
+            <div class="var1">
+                <label for="Habitat">Habitat :</label>
+                <select name="Habitat" id="Habitat">
+                    <option value="0">Select</option>
+                    <option value="0">Woods - d</option>
+                    <option value="1">Grasses - g</option>
+                    <option value="4">Paths - p</option>
+                    <option value="2">Leaves - l</option>
+                    <option value="5">Urban - u</option>
+                    <option value="3">Meadows - m</option>
+                    <option value="6">Waste - w</option>
+                </select>
+            </div>
             <br>
             <br>
             <input type="submit" value="Submit">
-        </form>
+        </form>        
     </div>
     <footer>
-        <!-- Footer content goes here -->
+
+        </nav>
     </footer>
 </body>
 

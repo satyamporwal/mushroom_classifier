@@ -28,8 +28,6 @@ def predict_datapoint():
             gill_color=request.form.get('Gill-Color'),
             stalk_root=request.form.get('Stalk-Root'),
             stalk_surface_above_ring=request.form.get('Stalk-Surface-Above-Ring'),
-            stalk_surface_below_ring=request.form.get('Stalk-Surface-below-Ring'),
-            veil_type=request.form.get('Veil-Type'),
             ring_type=request.form.get('Ring-Type'),
             spore_print_color=request.form.get('Spore-Print-Color'),
             population=request.form.get('Population'),

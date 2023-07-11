@@ -1,35 +1,33 @@
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler, LabelEncoder
+import sys
+import os
+from src.exception import CustomException
+from src.logger import logging
+import pandas as pd 
+import numpy as np
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler, LabelEncoder ,OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from dataclasses import dataclass
 from src.utils import save_object
-import sys
-from src.logger import logging
-from src.exception import CustomException
-import os
-import pandas as pd
-import numpy as np
-
+from data_ingestion import DataIngestion
 
 @dataclass
-class DataTransformationConfig:
-
-    preprocessor_obj_file_path: str = os.path.join('artifacts','preprocessor.pkl')
-    label_encoder_file_path: str = os.path.join('artifacts','label_encoder.pkl')
-
 class DataTransformation:
+    label_encoder_obj_file_path: str = os.path.join('artifacts', 'label_encoder.pkl')
+    preprocessor_obj_file_path: str = os.path.join('artifacts', 'preprocessor.pkl')
 
+class DataTransformationInitiated:
     def __init__(self):
+        self.datatransformation = DataTransformation()
 
-        self.datatransformation = DataTransformationConfig()
-
-    def get_data_transformation_object(self):
+    def get_datatransformation_obj(self) -> ColumnTransformer:
         try:
             logging.info('get_datatransformation_obj initiated')
-            categorical_cols = ['cap-surface', 'bruises', 'gill-spacing', 'gill-size', 'gill-color', 'stalk-surface-above-ring', 'stalk-surface-below-ring', 'veil-type', 'ring-type', 'spore-print-color', 'population', 'habitat', 'stalk-root']
+            categorical_cols = ['cap-surface', 'bruises', 'gill-spacing', 'gill-size', 'gill-color','stalk-root', 'stalk-surface-above-ring', 'ring-type', 'spore-print-color', 'population', 'habitat']
 
             logging.info('pipeline setup')
+
             cat_pipeline = Pipeline(
                 steps=[
                     ('imputer', SimpleImputer(strategy='most_frequent')),
@@ -45,7 +43,7 @@ class DataTransformation:
             logging.info('there is an error in the pipeline')
             raise CustomException(e, sys)
 
-    def initaite_data_transformation(self, train_data, test_data):
+    def initiate_data_transformation(self, train_data, test_data):
         try:
             logging.info('data transformation initiated')
             train_df = pd.read_csv(train_data)
@@ -83,8 +81,7 @@ class DataTransformation:
 
             
             
-            train_df = train_df.drop(columns='stalk-root_na', axis=1)
-            test_df = test_df.drop(columns='stalk-root_na', axis=1)
+            
             logging.info('handling missing data successful')
             logging.info(f'Train Dataframe Head In Logging:\n{train_df.head().to_string()}')
             logging.info(f'Test Dataframe Head In Logging:\n{test_df.head().to_string()}')
@@ -94,43 +91,56 @@ class DataTransformation:
             
 
             logging.info('getting preprocessor object')
-            preprocessing_obj = self.get_data_transformation_object()
+            preprocessing_obj = self.get_datatransformation_obj()
 
             target_column_name = 'class'
-            drop_columns = [target_column_name, 'cap-shape', 'cap-color', 'odor', 'gill-attachment', 'stalk-shape', 'stalk-color-above-ring', 'stalk-color-below-ring', 'veil-color', 'ring-number']
+            drop_columns = [target_column_name, 'cap-shape', 'cap-color', 'odor', 'gill-attachment', 'stalk-shape', 'stalk-color-above-ring', 'stalk-color-below-ring','stalk-surface-below-ring', 'veil-type' , 'veil-color', 'ring-number','stalk-root_na']
 
             input_feature_train_df = train_df.drop(columns=drop_columns, axis=1)
             target_feature_train_df = train_df[target_column_name]
-            print(input_feature_train_df.head())
+            logging.info(f'Test Dataframe Head In Logging:\n{input_feature_train_df.head()}')
+            for i in input_feature_train_df.columns:
+                print(i,input_feature_train_df[i].unique())
+
+            #logging.info(f'Test Dataframe Head In Logging:\n{input_feature_train_df[['stalk-root']].isnull().sum()}')
+
+            
             
 
-            labelencoder_x=LabelEncoder()
-            for column in input_feature_train_df.columns:
-                 input_feature_train_df[column] = labelencoder_x.fit_transform(input_feature_train_df[column])
+            label_encoder = LabelEncoder()
+            label_encoded_train_data = input_feature_train_df.apply(label_encoder.fit_transform)
+
+            for i in label_encoded_train_data.columns:
+                print(i,label_encoded_train_data[i].unique())
+            """save_object(
+                file_path=self.datatransformation.label_encoder_obj_file_path,
+                obj=label_encoder
+            )"""
             
-    
-        
 
             input_feature_test_df = test_df.drop(columns=drop_columns, axis=1)
             target_feature_test_df = test_df[target_column_name]
             logging.info(f'Test Dataframe Head In Logging:\n{test_df.info()}')
 
-            labelencoder_x=LabelEncoder()
-            for column in input_feature_test_df.columns:
-                 input_feature_test_df[column] = labelencoder_x.fit_transform(input_feature_test_df[column])
+            label_encoded_test_data = input_feature_test_df.apply(label_encoder.fit_transform)
+            """save_object(
+                file_path=self.datatransformation.label_encoder_obj_file_path,
+                obj=label_encoder
+            )"""
+            input_feature_train_arr = preprocessing_obj.fit_transform(label_encoded_train_data)
+            input_feature_test_arr = preprocessing_obj.transform(label_encoded_test_data)
+            for i in range(input_feature_train_arr.shape[1]):
+                 unique_values = np.unique(input_feature_train_arr[:, i])
+                 print(f"Unique values in column {i}: {unique_values}")
+
+
+            #input_feature_test_df = input_feature_test_df.apply(label_encoder.transform)
             logging.info(f'Test Dataframe Head In Logging:\n{input_feature_test_df.head()}')
-            save_object(
-                file_path=self.datatransformation.label_encoder_file_path,
-                obj=labelencoder_x
-
-            )
-            
-
-
 
             ## Transforming using preprocessor obj
-            input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+            #input_feature_test_encoded = label_encoded_train_data.apply(label_encoder.fit_transform)
+            #input_feature_test_arr = preprocessing_obj.transform(input_feature_test_encoded)
+
 
             logging.info("Applying preprocessing object on training and testing datasets.")
 
@@ -142,14 +152,13 @@ class DataTransformation:
                 obj=preprocessing_obj
             )
             logging.info('Preprocessor pickle file saved')
-           
-            
 
             return (train_arr, test_arr, self.datatransformation.preprocessor_obj_file_path)
 
         except Exception as e:
             logging.info("Exception occurred in the initiate_data_transformation")
             raise CustomException(e, sys)
+
 
 # Running the data transformation
 """if __name__ == '__main__':
@@ -162,4 +171,5 @@ class DataTransformation:
     train_arr, test_arr, preprocessor_file_path = obj.initiate_data_transformation(train_data_path, test_data_path)
     print("Data transformation completed successfully.")
     # print("Preprocessor file saved at:", preprocessor_file_path)"""
+
 
