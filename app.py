@@ -40,9 +40,10 @@ def predict_datapoint():
         predict_pipeline = PredictionPipeline()
         pred = predict_pipeline.predict(final_new_data)
         results = round(pred[0], 2)
+       
 
-        return render_template('result.html', final_result=results)
-      
+        return render_template('result.html', final_result=(f"It is {'poisonous' if results == 0 else 'edible'}"))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
